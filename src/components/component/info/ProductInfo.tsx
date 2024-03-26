@@ -14,17 +14,6 @@ const ProductInfo = () => {
   const client = useQueryClient();
   const user = client.getQueryData<UserType[]>([QUERY_KEY.USER_DATA]);
   const cartData = data?.filter((item) => item.userId === user?.[0].id);
-  const { defaultTotalPrice, setDeliveryPoint } = useTotalPriceStore();
-
-  useEffect(() => {
-    if (cartData) {
-      let totalPrice = 0;
-      for (let i = 0; i < cartData.length; i++) {
-        totalPrice += cartData[i].price;
-      }
-      defaultTotalPrice(totalPrice);
-    }
-  }, []);
 
   return (
     <Card>
