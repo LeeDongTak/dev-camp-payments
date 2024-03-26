@@ -6,7 +6,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import useFetchUserQuery from "@/hooks/usefetchUserQuery";
+import useFetchUserQuery from "@/hooks/useFetchUser";
 import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
 
@@ -27,6 +27,7 @@ export default function Home() {
         <ResizablePanel defaultSize={60}>
           <Info />
         </ResizablePanel>
+        <ResizableHandle />
         <ResizablePanel defaultSize={40}>
           <Payments />
         </ResizablePanel>
