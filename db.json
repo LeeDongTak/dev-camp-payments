@@ -34,6 +34,20 @@
       "type": "percent",
       "content": 30,
       "date": "2024-04-05"
+    },
+    {
+      "id": "444",
+      "userId": "1",
+      "type": "amount",
+      "content": 2000,
+      "date": "2024-04-05"
+    },
+    {
+      "id": "555",
+      "userId": "1",
+      "type": "percent",
+      "content": 10,
+      "date": "2024-04-05"
     }
   ]
 }

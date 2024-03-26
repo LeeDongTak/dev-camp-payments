@@ -13,6 +13,7 @@ export interface CartType {
   productCondition: string;
   numberOfProduct: number;
   price: number;
+  isDelivery: boolean;
 }
 export interface couponType {
   id: string;

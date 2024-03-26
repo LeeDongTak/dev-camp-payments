@@ -14,7 +14,7 @@ const ProductInfo = () => {
   const client = useQueryClient();
   const user = client.getQueryData<UserType[]>([QUERY_KEY.USER_DATA]);
   const cartData = data?.filter((item) => item.userId === user?.[0].id);
-  const { totalPrice, defaultTotalPrice } = useTotalPriceStore();
+  const { defaultTotalPrice, setDeliveryPoint } = useTotalPriceStore();
 
   useEffect(() => {
     if (cartData) {
