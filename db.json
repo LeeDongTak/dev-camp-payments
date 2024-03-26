@@ -1,0 +1,39 @@
+{
+  "user": [
+    {
+      "id": "1",
+      "name": "홍길동",
+      "phone": "01012345678",
+      "email": "user@test.com",
+      "address": "서울특벌시 서대문구 성산로7길 89-8 (연희동) 주식회사 아임웹 (03706)",
+      "point": 2300
+    }
+  ],
+  "cart": [
+    {
+      "id": "111",
+      "userId": "1",
+      "productName": "Daily Facial Soap",
+      "productCondition": "용량 : 80ml",
+      "numberOfProduct": 1,
+      "price": 18000,
+      "isDelivery": true
+    }
+  ],
+  "coupon": [
+    {
+      "id": "222",
+      "userId": "1",
+      "type": "amount",
+      "content": 5000,
+      "date": "2024-04-05"
+    },
+    {
+      "id": "333",
+      "userId": "1",
+      "type": "percent",
+      "content": 30,
+      "date": "2024-04-05"
+    }
+  ]
+}
