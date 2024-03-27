@@ -8,12 +8,27 @@ import { UserType } from "@/types/type";
 import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import CouponItem from "./CouponItem";
+import useFetchPoint from "@/hooks/useFetchPoint";
 
 const MembershipInfo = () => {
-  const { data } = useFetchCoupon();
+  const { data: couponDatas } = useFetchCoupon();
+  const { data: pointDatas } = useFetchPoint();
   const client = useQueryClient();
   const user = client.getQueryData<UserType[]>([QUERY_KEY.USER_DATA]);
-  const couponData = data?.filter((item) => item.userId === user?.[0].id);
+  const couponData = couponDatas?.filter(
+    (item) => item.userId === user?.[0].id
+  );
+  const pointData = pointDatas
+    ?.filter((item) => item.userId === user?.[0].id)
+    .map((item) => item.point);
+  const totalPoint =
+    pointData?.length === 0
+      ? 0
+      : (pointData?.reduce(
+          (accumulator, currentNumber) => accumulator + currentNumber
+        ) as number);
+
+  const clickApplyPointHandler = () => {};
 
   return (
     <Card>
@@ -41,11 +56,14 @@ const MembershipInfo = () => {
           <div className="h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background">
             0
           </div>
-          <Button type="button">전액사용</Button>
+          <Button type="button" onClick={clickApplyPointHandler}>
+            전액사용
+          </Button>
         </div>
         <div className="text-[0.7rem]">
           <p className=" text-[#333]">
-            보유 포인트 <span className="text-[#000] font-bold">2,300</span>
+            보유 포인트
+            <span className="text-[#000] font-bold">{totalPoint}</span>
           </p>
           <p className="text-[gray]">
             5,000포인트 이상 보유 및 10,000원이상 구매시 사용가능
