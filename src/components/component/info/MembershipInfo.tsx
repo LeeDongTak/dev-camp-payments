@@ -6,7 +6,7 @@ import { QUERY_KEY } from "@/keys/queryKeys";
 import { cn } from "@/lib/utils";
 import { CartType, UserType } from "@/types/type";
 import { useQueryClient } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import CouponItem from "./CouponItem";
 import useFetchPoint from "@/hooks/useFetchPoint";
 import {
@@ -51,6 +51,7 @@ const MembershipInfo = () => {
     },
   });
   const { point } = form.watch();
+  const pointValue = form.getFieldState("point");
 
   /**
    * 함수 영역
@@ -78,11 +79,6 @@ const MembershipInfo = () => {
 
   const changeValueHandler = (e?: React.ChangeEvent<HTMLInputElement>) => {
     form.trigger(["point"]);
-    const pointValue = form.getFieldState("point");
-    if (pointValue.invalid) {
-      form.setValue("point", point.substring(0, point.length - 1));
-      return;
-    }
     if (totalPoint < 5000) {
       toast({
         title: "포인트는 5000포인트 이상부터 사용가능합니다.",
@@ -111,7 +107,7 @@ const MembershipInfo = () => {
         duration: 2000,
       });
     }
-
+    if (isNaN(+point)) return;
     setApplyTotalPoint(totalPoint - +point);
   };
 
