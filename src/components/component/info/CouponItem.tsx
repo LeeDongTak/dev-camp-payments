@@ -15,7 +15,10 @@ const CouponItem = ({ item }: { item: couponType }) => {
     percent,
   } = useTotalPriceStore();
   const clickApplyCouponHandler = () => {
-    if (isPlusCoupon && totalProductPrice - applyCouponPoint < 0) {
+    if (
+      isPlusCoupon &&
+      totalProductPrice - applyCouponPoint - item.content < 0
+    ) {
       toast({
         title: "쿠폰할인은 0원 미만으로 적용할 수 없습니다. ",
         variant: "destructive",
