@@ -6,7 +6,7 @@ import { QUERY_KEY } from "@/keys/queryKeys";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/type";
 import { useQueryClient } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CouponItem from "./CouponItem";
 import useFetchPoint from "@/hooks/useFetchPoint";
 import {
@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { pointRegisterSchema } from "@/validation/isValidPoint";
 
 const MembershipInfo = () => {
+  const [applyTotalPoint, setApplyTotalPoint] = useState(0);
   const { data: couponDatas } = useFetchCoupon();
   const { data: pointDatas } = useFetchPoint();
   const client = useQueryClient();
@@ -53,12 +54,20 @@ const MembershipInfo = () => {
 
   const changeValueHandler = () => {
     form.trigger(["point"]);
+
+    const pointValue = form.getFieldState("point");
+    if (!pointValue.isDirty || pointValue.invalid) return;
+    setApplyTotalPoint(totalPoint - +point);
   };
 
   // 한글자 말려서 유효성 검사가 되는것을 방지하기 위함
   useEffect(() => {
     changeValueHandler();
   }, [point]);
+
+  useEffect(() => {
+    setApplyTotalPoint(totalPoint);
+  }, []);
 
   return (
     <Card>
@@ -105,7 +114,7 @@ const MembershipInfo = () => {
         <div className="text-[0.7rem]">
           <p className=" text-[#333]">
             보유 포인트
-            <span className="text-[#000] font-bold">{totalPoint}</span>
+            <span className="text-[#000] font-bold">{applyTotalPoint}</span>
           </p>
           <p className="text-[gray]">
             5,000포인트 이상 보유 및 10,000원이상 구매시 사용가능
