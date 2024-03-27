@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { pointRegisterSchema } from "@/validation/isValidPoint";
 import { useToast } from "@/components/ui/use-toast";
 import useTotalPriceStore from "@/store/total-price";
+import dayjs from "dayjs";
 
 const MembershipInfo = () => {
   const [applyTotalPoint, setApplyTotalPoint] = useState(0);
@@ -31,10 +32,11 @@ const MembershipInfo = () => {
   const { data: pointDatas, isLoading: isPointLoading } = useFetchPoint();
   const client = useQueryClient();
   const { toast } = useToast();
+  const today = dayjs().format("YYYY-MM-DD");
   const user = client.getQueryData<UserType[]>([QUERY_KEY.USER_DATA]);
   const cart = client.getQueryData<CartType[]>([QUERY_KEY.CART_DATA]);
   const couponData = couponDatas?.filter(
-    (item) => item.userId === user?.[0].id
+    (item) => item.userId === user?.[0].id && item.end_date > today
   );
   const cartData = cart
     ?.filter((item) => item.userId === user?.[0].id)
@@ -124,7 +126,7 @@ const MembershipInfo = () => {
 
   useEffect(() => {
     const pointData = pointDatas
-      ?.filter((item) => item.userId === user?.[0].id)
+      ?.filter((item) => item.userId === user?.[0].id && item.end_date > today)
       .map((item) => item.point);
     const totalPointData =
       pointData?.length === 0
