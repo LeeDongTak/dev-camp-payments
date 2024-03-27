@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import useFetchCoupon from "@/hooks/useFetchCoupon";
 import { QUERY_KEY } from "@/keys/queryKeys";
 import { cn } from "@/lib/utils";
-import { UserType } from "@/types/type";
+import { CartType, UserType } from "@/types/type";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import CouponItem from "./CouponItem";
@@ -30,9 +30,20 @@ const MembershipInfo = () => {
   const client = useQueryClient();
   const { toast } = useToast();
   const user = client.getQueryData<UserType[]>([QUERY_KEY.USER_DATA]);
+  const cart = client.getQueryData<CartType[]>([QUERY_KEY.CART_DATA]);
   const couponData = couponDatas?.filter(
     (item) => item.userId === user?.[0].id
   );
+  const cartData = cart
+    ?.filter((item) => item.userId === user?.[0].id)
+    .map((item) => item.price);
+  const totalProductPrice =
+    cartData?.length === 0
+      ? 0
+      : (cartData?.reduce(
+          (accumulator, currentNumber) => accumulator + currentNumber
+        ) as number);
+
   const form = useForm<{ point: string }>({
     resolver: zodResolver(pointRegisterSchema),
     defaultValues: {
@@ -44,13 +55,53 @@ const MembershipInfo = () => {
   /**
    * 함수 영역
    */
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    if (totalPoint < 5000) {
+      toast({
+        title: "포인트는 5000포인트 이상부터 사용가능합니다.",
+        variant: "destructive",
+        duration: 2000,
+      });
+      form.setValue("point", "0");
+    }
+    if (totalProductPrice < 10000) {
+      toast({
+        title: "10000원 이상 구매시 포인트 사용이 가능합니다.",
+        variant: "destructive",
+        duration: 2000,
+      });
+      form.setValue("point", "0");
+    }
+    form.setValue("point", "" + totalPoint);
+    setApplyTotalPoint(0);
+  };
 
-  const changeValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const changeValueHandler = (e?: React.ChangeEvent<HTMLInputElement>) => {
     form.trigger(["point"]);
-
     const pointValue = form.getFieldState("point");
-    if (!pointValue.isDirty || pointValue.invalid) return;
+    if (pointValue.invalid) {
+      form.setValue("point", point.substring(0, point.length - 1));
+      return;
+    }
+    if (totalPoint < 5000) {
+      toast({
+        title: "포인트는 5000포인트 이상부터 사용가능합니다.",
+        variant: "destructive",
+        duration: 2000,
+      });
+      form.setValue("point", "0");
+      return;
+    }
+    if (totalProductPrice < 10000) {
+      toast({
+        title: "10000원 이상 구매시 포인트 사용이 가능합니다.",
+        variant: "destructive",
+        duration: 2000,
+      });
+      form.setValue("point", "0");
+      return;
+    }
+
     if (applyTotalPoint < 0) {
       console.log("asdf");
       form.setValue("point", "0");
@@ -117,7 +168,14 @@ const MembershipInfo = () => {
                 <FormItem className={cn(" w-[100%]")}>
                   <FormLabel>포인트</FormLabel>
                   <FormControl>
-                    <Input onChangeCapture={changeValueHandler} {...field} />
+                    <Input
+                      onChangeCapture={(
+                        e: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        changeValueHandler(e);
+                      }}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
