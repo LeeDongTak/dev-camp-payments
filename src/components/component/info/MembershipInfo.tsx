@@ -21,9 +21,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { pointRegisterSchema } from "@/validation/isValidPoint";
 import { useToast } from "@/components/ui/use-toast";
+import useTotalPriceStore from "@/store/total-price";
 
 const MembershipInfo = () => {
   const [applyTotalPoint, setApplyTotalPoint] = useState(0);
+  const { setUsedTotalPoint } = useTotalPriceStore();
   const [totalPoint, setTotalPoint] = useState(0);
   const { data: couponDatas } = useFetchCoupon();
   const { data: pointDatas, isLoading: isPointLoading } = useFetchPoint();
@@ -51,7 +53,6 @@ const MembershipInfo = () => {
     },
   });
   const { point } = form.watch();
-  const pointValue = form.getFieldState("point");
 
   /**
    * 함수 영역
@@ -75,6 +76,7 @@ const MembershipInfo = () => {
     }
     form.setValue("point", "" + totalPoint);
     setApplyTotalPoint(0);
+    setUsedTotalPoint(totalPoint);
   };
 
   const changeValueHandler = (e?: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,11 +109,15 @@ const MembershipInfo = () => {
         duration: 2000,
       });
     }
-    if (isNaN(+point)) return;
+    if (isNaN(+point)) {
+      setApplyTotalPoint(totalPoint);
+      return;
+    }
     setApplyTotalPoint(totalPoint - +point);
+    setUsedTotalPoint(+point);
   };
 
-  // 한글자 말려서 유효성 검사가 되는것을 방지하기 위함
+  // 한글자 밀려서 유효성 검사가 되는것을 방지하기 위함
   useEffect(() => {
     changeValueHandler();
   }, [point]);
