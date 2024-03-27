@@ -6,9 +6,20 @@ import { QUERY_KEY } from "@/keys/queryKeys";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/type";
 import { useQueryClient } from "@tanstack/react-query";
-import React from "react";
+import React, { useEffect } from "react";
 import CouponItem from "./CouponItem";
 import useFetchPoint from "@/hooks/useFetchPoint";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { pointRegisterSchema } from "@/validation/isValidPoint";
 
 const MembershipInfo = () => {
   const { data: couponDatas } = useFetchCoupon();
@@ -27,8 +38,27 @@ const MembershipInfo = () => {
       : (pointData?.reduce(
           (accumulator, currentNumber) => accumulator + currentNumber
         ) as number);
+  const form = useForm<{ point: string }>({
+    resolver: zodResolver(pointRegisterSchema),
+    defaultValues: {
+      point: "0",
+    },
+  });
+  const { point } = form.watch();
 
-  const clickApplyPointHandler = () => {};
+  /**
+   * 함수 영역
+   */
+  const onSubmit = () => {};
+
+  const changeValueHandler = () => {
+    form.trigger(["point"]);
+  };
+
+  // 한글자 말려서 유효성 검사가 되는것을 방지하기 위함
+  useEffect(() => {
+    changeValueHandler();
+  }, [point]);
 
   return (
     <Card>
@@ -51,15 +81,27 @@ const MembershipInfo = () => {
         </div>
       </CardContent>
       <CardContent className={cn("flex flex-col text-[0.9rem] gap-3")}>
-        <div>포인트</div>
-        <div className="flex gap-2">
-          <div className="h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background">
-            0
-          </div>
-          <Button type="button" onClick={clickApplyPointHandler}>
-            전액사용
-          </Button>
-        </div>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex space-y-7 gap-2"
+          >
+            <FormField
+              control={form.control}
+              name="point"
+              render={({ field }) => (
+                <FormItem className={cn(" w-[100%]")}>
+                  <FormLabel>포인트</FormLabel>
+                  <FormControl>
+                    <Input onChangeCapture={changeValueHandler} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">전액사용</Button>
+          </form>
+        </Form>
         <div className="text-[0.7rem]">
           <p className=" text-[#333]">
             보유 포인트
