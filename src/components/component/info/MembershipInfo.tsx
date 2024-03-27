@@ -20,25 +20,19 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { pointRegisterSchema } from "@/validation/isValidPoint";
+import { useToast } from "@/components/ui/use-toast";
 
 const MembershipInfo = () => {
   const [applyTotalPoint, setApplyTotalPoint] = useState(0);
+  const [totalPoint, setTotalPoint] = useState(0);
   const { data: couponDatas } = useFetchCoupon();
-  const { data: pointDatas } = useFetchPoint();
+  const { data: pointDatas, isLoading: isPointLoading } = useFetchPoint();
   const client = useQueryClient();
+  const { toast } = useToast();
   const user = client.getQueryData<UserType[]>([QUERY_KEY.USER_DATA]);
   const couponData = couponDatas?.filter(
     (item) => item.userId === user?.[0].id
   );
-  const pointData = pointDatas
-    ?.filter((item) => item.userId === user?.[0].id)
-    .map((item) => item.point);
-  const totalPoint =
-    pointData?.length === 0
-      ? 0
-      : (pointData?.reduce(
-          (accumulator, currentNumber) => accumulator + currentNumber
-        ) as number);
   const form = useForm<{ point: string }>({
     resolver: zodResolver(pointRegisterSchema),
     defaultValues: {
@@ -52,11 +46,21 @@ const MembershipInfo = () => {
    */
   const onSubmit = () => {};
 
-  const changeValueHandler = () => {
+  const changeValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     form.trigger(["point"]);
 
     const pointValue = form.getFieldState("point");
     if (!pointValue.isDirty || pointValue.invalid) return;
+    if (applyTotalPoint < 0) {
+      console.log("asdf");
+      form.setValue("point", "0");
+      toast({
+        title: "보유하신 포인트보다 많은 포인트를 입력할 수 없습니다",
+        variant: "destructive",
+        duration: 2000,
+      });
+    }
+
     setApplyTotalPoint(totalPoint - +point);
   };
 
@@ -66,8 +70,19 @@ const MembershipInfo = () => {
   }, [point]);
 
   useEffect(() => {
-    setApplyTotalPoint(totalPoint);
-  }, []);
+    const pointData = pointDatas
+      ?.filter((item) => item.userId === user?.[0].id)
+      .map((item) => item.point);
+    const totalPointData =
+      pointData?.length === 0
+        ? 0
+        : (pointData?.reduce(
+            (accumulator, currentNumber) => accumulator + currentNumber
+          ) as number);
+
+    setTotalPoint(totalPointData);
+    setApplyTotalPoint(totalPointData);
+  }, [totalPoint, isPointLoading]);
 
   return (
     <Card>

@@ -26,42 +26,48 @@
       "userId": "1",
       "type": "amount",
       "content": 5000,
-      "end_date": "2024-04-05"
+      "end_date": "2024-04-05",
+      "isApply": false
     },
     {
       "id": "333",
       "userId": "1",
       "type": "percent",
       "content": 30,
-      "end_date": "2024-04-05"
+      "end_date": "2024-04-05",
+      "isApply": false
     },
     {
       "id": "444",
       "userId": "1",
       "type": "amount",
       "content": 2000,
-      "end_date": "2024-04-05"
+      "end_date": "2024-04-05",
+      "isApply": false
     },
     {
       "id": "4445",
       "userId": "1",
       "type": "amount",
       "content": 2000,
-      "end_date": "2024-04-05"
+      "end_date": "2024-04-05",
+      "isApply": false
     },
     {
       "id": "9999",
       "userId": "1",
       "type": "amount",
       "content": 10000,
-      "end_date": "2024-04-05"
+      "end_date": "2024-04-05",
+      "isApply": false
     },
     {
       "id": "555",
       "userId": "1",
       "type": "percent",
       "content": 10,
-      "end_date": "2024-04-05"
+      "end_date": "2024-04-05",
+      "isApply": false
     }
   ],
   "point": [
@@ -69,25 +75,29 @@
       "id": "435",
       "userId": "1",
       "point": 1000,
-      "end_date": "2024-04-05"
+      "end_date": "2024-04-05",
+      "isApply": false
     },
     {
       "id": "435",
       "userId": "1",
       "point": 500,
-      "end_date": "2024-04-05"
+      "end_date": "2024-04-05",
+      "isApply": false
     },
     {
       "id": "435",
       "userId": "1",
       "point": 1000,
-      "end_date": "2024-03-05"
+      "end_date": "2024-03-05",
+      "isApply": false
     },
     {
       "id": "435",
       "userId": "1",
       "point": 1000,
-      "end_date": "2024-03-05"
+      "end_date": "2024-03-05",
+      "isApply": false
     }
   ]
 }

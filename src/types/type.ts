@@ -21,10 +21,12 @@ export interface couponType {
   type: string;
   content: number;
   end_date: string;
+  isApply: boolean;
 }
 export interface PointType {
   id: string;
   userId: string;
   point: number;
   end_date: string;
+  isApply: boolean;
 }

@@ -4,11 +4,11 @@ import { PointType } from "@/types/type";
 import { useQuery } from "@tanstack/react-query";
 
 const useFetchPoint = () => {
-  const { data } = useQuery<PointType[]>({
+  const { data, isLoading } = useQuery<PointType[]>({
     queryKey: [QUERY_KEY.POINT_DATA],
     queryFn: fetchPoint,
   });
-  return { data };
+  return { data, isLoading };
 };
 
 export default useFetchPoint;
