@@ -16,6 +16,7 @@ const TotalPayments = () => {
     applyCouponPoint,
     amount,
     percent,
+    usedTotalPoint,
     setTotalProductPrice,
     setApplyCouponPoint,
     setDeliveryPoint,
@@ -34,15 +35,22 @@ const TotalPayments = () => {
       const isDeliveryPoints = cartData?.map((x) => x.isDelivery);
       const isDeliveryPoint = isDeliveryPoints?.includes(true);
       setDeliveryPoint(isDeliveryPoint ? 2500 : 0);
-
       const applyCouponPrice =
         percent !== 0
-          ? (totalProductPrice - amount) * (1 - percent / 100)
-          : totalProductPrice - amount;
+          ? (totalProductPrice - usedTotalPoint - amount) * (1 - percent / 100)
+          : totalProductPrice - usedTotalPoint - amount;
       setApplyCouponPoint(totalProductPrice - applyCouponPrice);
       setTotalPrice(applyCouponPrice + deliveryPoint);
     }
-  }, [totalProductPrice, deliveryPoint, cartData, amount, percent, totalPrice]);
+  }, [
+    totalProductPrice,
+    usedTotalPoint,
+    deliveryPoint,
+    cartData,
+    amount,
+    percent,
+    totalPrice,
+  ]);
 
   return (
     <Card>
@@ -60,7 +68,7 @@ const TotalPayments = () => {
         </div>
         <div className="flex justify-between items-center">
           <span className=" text-[gray]">포인트</span>
-          <span className="font-semibold">-0원</span>
+          <span className="font-semibold">-{usedTotalPoint}원</span>
         </div>
         <div className="flex justify-between items-center">
           <span className=" text-[gray]">배송비</span>
