@@ -57,13 +57,7 @@ const CouponItem = ({ item }: { item: couponType }) => {
   };
 
   useEffect(() => {
-    if (
-      JSON.parse(
-        JSON.parse(JSON.stringify(localStorage.getItem("couponId")))
-      ) === null
-    ) {
-      localStorage.setItem("couponId", JSON.stringify([]));
-    }
+    localStorage.setItem("couponId", JSON.stringify([]));
   }, []);
   return (
     <div className="flex gap-2">

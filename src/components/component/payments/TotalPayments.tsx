@@ -8,24 +8,21 @@ import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 
 const TotalPayments = () => {
-  const [totalPrice, setTotalPrice] = useState(0);
-
   const {
+    totalPrice,
     totalProductPrice,
     deliveryPoint,
     applyCouponPoint,
     amount,
     percent,
     usedTotalPoint,
+    setTotalPrice,
     setTotalProductPrice,
     setApplyCouponPoint,
     setDeliveryPoint,
   } = useTotalPriceStore();
   const client = useQueryClient();
   const cartData = client.getQueryData<CartType[]>([QUERY_KEY.CART_DATA]);
-  const couponStorage = JSON.parse(
-    JSON.parse(JSON.stringify(localStorage.getItem("couponId")))
-  );
 
   useEffect(() => {
     if (cartData) {

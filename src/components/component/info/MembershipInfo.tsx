@@ -4,9 +4,14 @@ import { Input } from "@/components/ui/input";
 import useFetchCoupon from "@/hooks/useFetchCoupon";
 import { QUERY_KEY } from "@/keys/queryKeys";
 import { cn } from "@/lib/utils";
-import { CartType, UserType } from "@/types/type";
+import { CartType, UserType, couponType } from "@/types/type";
 import { useQueryClient } from "@tanstack/react-query";
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import CouponItem from "./CouponItem";
 import useFetchPoint from "@/hooks/useFetchPoint";
 import {
@@ -26,8 +31,13 @@ import dayjs from "dayjs";
 
 const MembershipInfo = () => {
   const [applyTotalPoint, setApplyTotalPoint] = useState(0);
-  const { totalProductPrice, applyCouponPoint, setUsedTotalPoint } =
-    useTotalPriceStore();
+  const {
+    totalPrice,
+    totalProductPrice,
+    setAmount,
+    setPercent,
+    setUsedTotalPoint,
+  } = useTotalPriceStore();
   const [totalPoint, setTotalPoint] = useState(0);
   const { data: couponDatas } = useFetchCoupon();
   const { data: pointDatas, isLoading: isPointLoading } = useFetchPoint();
@@ -35,7 +45,6 @@ const MembershipInfo = () => {
   const { toast } = useToast();
   const today = dayjs().format("YYYY-MM-DD");
   const user = client.getQueryData<UserType[]>([QUERY_KEY.USER_DATA]);
-  const cart = client.getQueryData<CartType[]>([QUERY_KEY.CART_DATA]);
   const couponData = couponDatas?.filter(
     (item) => item.userId === user?.[0].id && item.end_date > today
   );
@@ -46,6 +55,9 @@ const MembershipInfo = () => {
     },
   });
   const { point } = form.watch();
+  const couponStorage =
+    typeof window !== "undefined" &&
+    JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem("couponId"))));
 
   //함수 영역
   const onSubmit = () => {
@@ -126,6 +138,23 @@ const MembershipInfo = () => {
     setTotalPoint(totalPointData);
     setApplyTotalPoint(totalPointData);
   }, [totalPoint, isPointLoading]);
+
+  useLayoutEffect(() => {
+    if (totalPrice < 0) {
+      let couponIdArr = [...couponStorage];
+      let deleteCouponId = couponIdArr[couponIdArr.length - 1];
+      let deleteCouponData = couponData?.filter(
+        (x) => x.id === deleteCouponId
+      ) as couponType[];
+      if (deleteCouponData[0].type === "amount") {
+        setAmount(-deleteCouponData[0].content);
+      } else if (deleteCouponData[0].type === "percent") {
+        setPercent(-deleteCouponData[0].content);
+      }
+      couponIdArr.pop();
+      localStorage.setItem("couponId", JSON.stringify(couponIdArr));
+    }
+  }, [totalPrice]);
 
   return (
     <Card>
