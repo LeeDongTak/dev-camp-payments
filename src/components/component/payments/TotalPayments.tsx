@@ -35,6 +35,7 @@ const TotalPayments = () => {
       const isDeliveryPoints = cartData?.map((x) => x.isDelivery);
       const isDeliveryPoint = isDeliveryPoints?.includes(true);
       setDeliveryPoint(isDeliveryPoint ? 2500 : 0);
+
       const applyCouponPrice =
         percent !== 0
           ? (totalProductPrice - usedTotalPoint - amount) * (1 - percent / 100)

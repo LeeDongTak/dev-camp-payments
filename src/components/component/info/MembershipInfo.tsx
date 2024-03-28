@@ -26,7 +26,8 @@ import dayjs from "dayjs";
 
 const MembershipInfo = () => {
   const [applyTotalPoint, setApplyTotalPoint] = useState(0);
-  const { setUsedTotalPoint } = useTotalPriceStore();
+  const { totalProductPrice, applyCouponPoint, setUsedTotalPoint } =
+    useTotalPriceStore();
   const [totalPoint, setTotalPoint] = useState(0);
   const { data: couponDatas } = useFetchCoupon();
   const { data: pointDatas, isLoading: isPointLoading } = useFetchPoint();
@@ -38,16 +39,6 @@ const MembershipInfo = () => {
   const couponData = couponDatas?.filter(
     (item) => item.userId === user?.[0].id && item.end_date > today
   );
-  const cartData = cart
-    ?.filter((item) => item.userId === user?.[0].id)
-    .map((item) => item.price);
-  const totalProductPrice =
-    cartData?.length === 0
-      ? 0
-      : (cartData?.reduce(
-          (accumulator, currentNumber) => accumulator + currentNumber
-        ) as number);
-
   const form = useForm<{ point: string }>({
     resolver: zodResolver(pointRegisterSchema),
     defaultValues: {
@@ -56,9 +47,7 @@ const MembershipInfo = () => {
   });
   const { point } = form.watch();
 
-  /**
-   * 함수 영역
-   */
+  //함수 영역
   const onSubmit = () => {
     if (totalPoint < 5000) {
       toast({
@@ -80,7 +69,6 @@ const MembershipInfo = () => {
     setApplyTotalPoint(0);
     setUsedTotalPoint(totalPoint);
   };
-
   const changeValueHandler = (e?: React.ChangeEvent<HTMLInputElement>) => {
     form.trigger(["point"]);
     if (totalPoint < 5000) {

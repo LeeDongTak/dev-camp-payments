@@ -2,11 +2,14 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import useTotalPriceStore from "@/store/total-price";
 import { couponType } from "@/types/type";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const CouponItem = ({ item }: { item: couponType }) => {
   const [isPlusCoupon, setIsPlusCoupon] = useState(true);
   const { toast } = useToast();
+  const couponStorage = JSON.parse(
+    JSON.parse(JSON.stringify(localStorage.getItem("couponId")))
+  );
   const {
     totalProductPrice,
     applyCouponPoint,
@@ -29,20 +32,39 @@ const CouponItem = ({ item }: { item: couponType }) => {
     setIsPlusCoupon(!isPlusCoupon);
     if (item.type === "amount") {
       if (isPlusCoupon) {
+        let couponIdArr = [...couponStorage];
+        couponIdArr.push(item.id);
+        localStorage.setItem("couponId", JSON.stringify(couponIdArr));
         setAmount(item.content);
       } else if (!isPlusCoupon) {
+        let couponIdArr = couponStorage.filter((x: string) => x !== item.id);
+        localStorage.setItem("couponId", JSON.stringify(couponIdArr));
         setAmount(-item.content);
       }
     }
     if (item.type === "percent") {
       if (isPlusCoupon) {
+        let couponIdArr = [...couponStorage];
+        couponIdArr.push(item.id);
+        localStorage.setItem("couponId", JSON.stringify(couponIdArr));
         setPercent(item.content);
       } else if (!isPlusCoupon) {
+        let couponIdArr = couponStorage.filter((x: string) => x !== item.id);
+        localStorage.setItem("couponId", JSON.stringify(couponIdArr));
         setPercent(-item.content);
       }
     }
   };
 
+  useEffect(() => {
+    if (
+      JSON.parse(
+        JSON.parse(JSON.stringify(localStorage.getItem("couponId")))
+      ) === null
+    ) {
+      localStorage.setItem("couponId", JSON.stringify([]));
+    }
+  }, []);
   return (
     <div className="flex gap-2">
       <div
