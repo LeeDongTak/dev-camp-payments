@@ -7,9 +7,9 @@ import React, { useEffect, useState } from "react";
 const CouponItem = ({ item }: { item: couponType }) => {
   const [isPlusCoupon, setIsPlusCoupon] = useState(true);
   const { toast } = useToast();
-  const couponStorage = JSON.parse(
-    JSON.parse(JSON.stringify(localStorage.getItem("couponId")))
-  );
+  const couponStorage =
+    typeof window !== "undefined" &&
+    JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem("couponId"))));
   const {
     totalProductPrice,
     applyCouponPoint,
@@ -57,9 +57,11 @@ const CouponItem = ({ item }: { item: couponType }) => {
   };
 
   useEffect(() => {
-    const couponArr = [...couponStorage];
-    if (!couponArr.includes(item.id)) {
-      setIsPlusCoupon(true);
+    if (couponStorage) {
+      const couponArr = "undefined" && [...couponStorage];
+      if (!couponArr.includes(item.id)) {
+        setIsPlusCoupon(true);
+      }
     }
   }, [couponStorage]);
 
