@@ -16,7 +16,7 @@ export default function Home() {
   const { data } = useFetchUserQuery();
 
   return (
-    <Card className={cn("mx-auto w-[800px] mt-[30px] bg-[#fafafa]")}>
+    <Card className={cn("mx-auto w-[1400px] mt-[30px] bg-[#fafafa]")}>
       <CardHeader>
         <CardTitle className={cn("mx-auto text-[#555]")}>결제하기</CardTitle>
       </CardHeader>
