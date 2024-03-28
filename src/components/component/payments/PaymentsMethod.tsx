@@ -14,6 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { CartType, UserType } from "@/types/type";
 import { QUERY_KEY } from "@/keys/queryKeys";
 import useTotalPriceStore from "@/store/total-price";
+import { useToast } from "@/components/ui/use-toast";
 
 const PaymentsMethod = () => {
   const paymentWidgetRef = useRef<PaymentWidgetInstance | null>(null);
@@ -29,6 +30,7 @@ const PaymentsMethod = () => {
   const userName = user?.[0].name as string;
   const userEmail = user?.[0].email as string;
   const product = cart?.[0].productName as string;
+  const { toast } = useToast();
 
   const clickPaymentsHandler = async () => {
     const paymentWidget = paymentWidgetRef.current;
@@ -43,7 +45,11 @@ const PaymentsMethod = () => {
         failUrl: `${window.location.origin}/fail`,
       });
     } catch (err) {
-      console.log(err);
+      toast({
+        title: `${err}`,
+        variant: "destructive",
+        duration: 2000,
+      });
     }
   };
 
