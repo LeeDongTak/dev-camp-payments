@@ -15,6 +15,7 @@ type TotalPriceType = {
   setPercent: (value: number) => void;
   setUsedTotalPoint: (value: number) => void;
   setDeliveryPoint: (value: number) => void;
+  resetState: () => void;
 };
 
 const useTotalPriceStore = create<TotalPriceType>()((set) => ({
@@ -39,6 +40,16 @@ const useTotalPriceStore = create<TotalPriceType>()((set) => ({
     set((state) => ({ percent: (state.percent += value) })),
   setUsedTotalPoint: (value) => set((state) => ({ usedTotalPoint: value })),
   setDeliveryPoint: (value) => set((state) => ({ deliveryPoint: value })),
+  resetState: () =>
+    set((state) => ({
+      totalPrice: 0,
+      totalProductPrice: 0,
+      applyCouponPoint: 0,
+      amount: 0,
+      percent: 0,
+      usedTotalPoint: 0,
+      deliveryPoint: 0,
+    })),
 }));
 
 export default useTotalPriceStore;

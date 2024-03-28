@@ -8,12 +8,21 @@ import {
 } from "@/components/ui/resizable";
 import useFetchUserQuery from "@/hooks/useFetchUser";
 import { cn } from "@/lib/utils";
+import useTotalPriceStore from "@/store/total-price";
 import { Inter } from "next/font/google";
+import { useEffect, useLayoutEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const { data } = useFetchUserQuery();
+  const { resetState } = useTotalPriceStore();
+
+  useLayoutEffect(() => {
+    return () => {
+      resetState();
+    };
+  }, []);
 
   return (
     <Card className={cn("mx-auto w-[1400px] mt-[30px] bg-[#fafafa]")}>

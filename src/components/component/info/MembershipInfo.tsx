@@ -10,6 +10,7 @@ import React, {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useRef,
   useState,
 } from "react";
 import CouponItem from "./CouponItem";
@@ -31,6 +32,7 @@ import dayjs from "dayjs";
 
 const MembershipInfo = () => {
   const [applyTotalPoint, setApplyTotalPoint] = useState(0);
+  const didMountRef = useRef(false);
   const {
     totalPrice,
     totalProductPrice,
@@ -121,7 +123,13 @@ const MembershipInfo = () => {
 
   // 한글자 밀려서 유효성 검사가 되는것을 방지하기 위함
   useEffect(() => {
-    changeValueHandler();
+    if (didMountRef.current) {
+      changeValueHandler();
+    }
+    didMountRef.current = true;
+    return () => {
+      didMountRef.current = false;
+    };
   }, [point]);
 
   useEffect(() => {
