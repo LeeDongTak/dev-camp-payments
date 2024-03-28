@@ -26,7 +26,7 @@ const PaymentsMethod = () => {
   const user = client.getQueryData<UserType[]>([QUERY_KEY.USER_DATA]);
   const cart = client.getQueryData<CartType[]>([QUERY_KEY.CART_DATA]);
   const clientKey = process.env.NEXT_PUBLIC_TOSS_PAYMENTS_CLIENT_KEY as string;
-  const customerKey = "YbX2HuSlsC9uVJW6NMRMj";
+  const customerKey = user?.[0].id as string;
   const userName = user?.[0].name as string;
   const userEmail = user?.[0].email as string;
   const product = cart?.[0].productName as string;
@@ -68,17 +68,19 @@ const PaymentsMethod = () => {
 
   useEffect(() => {
     (async () => {
-      const paymentWidget = await loadPaymentWidget(clientKey, customerKey);
+      if (user) {
+        const paymentWidget = await loadPaymentWidget(clientKey, customerKey);
 
-      const paymentMethodsWidget = paymentWidget.renderPaymentMethods(
-        "#payment-widget",
-        totalPrice
-      );
+        const paymentMethodsWidget = paymentWidget.renderPaymentMethods(
+          "#payment-widget",
+          totalPrice
+        );
 
-      paymentWidgetRef.current = paymentWidget;
-      paymentMethodsWidgetRef.current = paymentMethodsWidget;
+        paymentWidgetRef.current = paymentWidget;
+        paymentMethodsWidgetRef.current = paymentMethodsWidget;
+      }
     })();
-  }, []);
+  }, [user]);
 
   return (
     <Card>

@@ -6,13 +6,7 @@ import { QUERY_KEY } from "@/keys/queryKeys";
 import { cn } from "@/lib/utils";
 import { CartType, UserType, couponType } from "@/types/type";
 import { useQueryClient } from "@tanstack/react-query";
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import CouponItem from "./CouponItem";
 import useFetchPoint from "@/hooks/useFetchPoint";
 import {
