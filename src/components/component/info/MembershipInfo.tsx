@@ -83,8 +83,13 @@ const MembershipInfo = () => {
     setApplyTotalPoint(0);
     setUsedTotalPoint(totalPoint);
   };
-  const changeValueHandler = (e?: React.ChangeEvent<HTMLInputElement>) => {
+
+  const formTrigger = () => {
     form.trigger(["point"]);
+  };
+
+  const changeValueHandler = (e?: React.ChangeEvent<HTMLInputElement>) => {
+    formTrigger();
     if (totalPoint < 5000) {
       toast({
         title: "포인트는 5000포인트 이상부터 사용가능합니다.",
@@ -123,13 +128,7 @@ const MembershipInfo = () => {
 
   // 한글자 밀려서 유효성 검사가 되는것을 방지하기 위함
   useEffect(() => {
-    if (didMountRef.current) {
-      changeValueHandler();
-    }
-    didMountRef.current = true;
-    return () => {
-      didMountRef.current = false;
-    };
+    formTrigger();
   }, [point]);
 
   useEffect(() => {
