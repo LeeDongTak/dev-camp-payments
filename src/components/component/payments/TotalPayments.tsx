@@ -23,6 +23,9 @@ const TotalPayments = () => {
   } = useTotalPriceStore();
   const client = useQueryClient();
   const cartData = client.getQueryData<CartType[]>([QUERY_KEY.CART_DATA]);
+  const couponStorage = JSON.parse(
+    JSON.parse(JSON.stringify(localStorage.getItem("couponId")))
+  );
 
   useEffect(() => {
     if (cartData) {
@@ -40,6 +43,7 @@ const TotalPayments = () => {
         percent !== 0
           ? (totalProductPrice - usedTotalPoint - amount) * (1 - percent / 100)
           : totalProductPrice - usedTotalPoint - amount;
+
       setApplyCouponPoint(totalProductPrice - applyCouponPrice);
       setTotalPrice(applyCouponPrice + deliveryPoint);
     }
