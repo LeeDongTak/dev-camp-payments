@@ -57,6 +57,13 @@ const CouponItem = ({ item }: { item: couponType }) => {
   };
 
   useEffect(() => {
+    const couponArr = [...couponStorage];
+    if (!couponArr.includes(item.id)) {
+      setIsPlusCoupon(true);
+    }
+  }, [couponStorage]);
+
+  useEffect(() => {
     localStorage.setItem("couponId", JSON.stringify([]));
   }, []);
   return (
