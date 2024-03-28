@@ -82,8 +82,12 @@ const MembershipInfo = () => {
     form.trigger(["point"]);
   };
 
-  const changeValueHandler = (e?: React.ChangeEvent<HTMLInputElement>) => {
-    formTrigger();
+  const setApplyPoint = () => {
+    setApplyTotalPoint(totalPoint - +point);
+    setUsedTotalPoint(+point);
+  };
+
+  const formSetValue = () => {
     if (totalPoint < 5000) {
       toast({
         title: "포인트는 5000포인트 이상부터 사용가능합니다.",
@@ -104,25 +108,66 @@ const MembershipInfo = () => {
     }
 
     if (applyTotalPoint < 0) {
-      console.log("asdf");
-      form.setValue("point", "0");
       toast({
         title: "보유하신 포인트보다 많은 포인트를 입력할 수 없습니다",
         variant: "destructive",
         duration: 2000,
       });
+      form.setValue("point", "0");
+      return;
     }
+  };
+
+  const NaNOfPoint = () => {
     if (isNaN(+point)) {
       setApplyTotalPoint(totalPoint);
       return;
     }
-    setApplyTotalPoint(totalPoint - +point);
-    setUsedTotalPoint(+point);
+  };
+
+  const changeValueHandler = (e?: React.ChangeEvent<HTMLInputElement>) => {
+    formTrigger();
+    if (totalPoint < 5000) {
+      toast({
+        title: "포인트는 5000포인트 이상부터 사용가능합니다.",
+        variant: "destructive",
+        duration: 2000,
+      });
+      formSetValue();
+      return;
+    }
+    if (totalProductPrice < 10000) {
+      toast({
+        title: "10000원 이상 구매시 포인트 사용이 가능합니다.",
+        variant: "destructive",
+        duration: 2000,
+      });
+      formSetValue();
+      return;
+    }
+
+    if (applyTotalPoint < 0) {
+      toast({
+        title: "보유하신 포인트보다 많은 포인트를 입력할 수 없습니다",
+        variant: "destructive",
+        duration: 2000,
+      });
+      formSetValue();
+      return;
+    }
+    if (isNaN(+point)) {
+      NaNOfPoint();
+      return;
+    }
+    setApplyPoint();
   };
 
   // 한글자 밀려서 유효성 검사가 되는것을 방지하기 위함
   useEffect(() => {
     formTrigger();
+    setApplyPoint();
+    formSetValue();
+    NaNOfPoint();
   }, [point]);
 
   useEffect(() => {
@@ -141,21 +186,23 @@ const MembershipInfo = () => {
   }, [totalPoint, isPointLoading]);
 
   useLayoutEffect(() => {
-    if (totalPrice < 0) {
-      let couponIdArr = [...couponStorage];
-      let deleteCouponId = couponIdArr[couponIdArr.length - 1];
-      let deleteCouponData = couponData?.filter(
-        (x) => x.id === deleteCouponId
-      ) as couponType[];
-      if (deleteCouponData[0].type === "amount") {
-        setAmount(-deleteCouponData[0].content);
-      } else if (deleteCouponData[0].type === "percent") {
-        setPercent(-deleteCouponData[0].content);
+    if (couponDatas) {
+      if (totalPrice < 0) {
+        let couponIdArr = [...couponStorage];
+        let deleteCouponId = couponIdArr[couponIdArr.length - 1];
+        let deleteCouponData = couponData?.filter(
+          (x) => x.id === deleteCouponId
+        ) as couponType[];
+        if (deleteCouponData?.[0]?.type === "amount") {
+          setAmount(-deleteCouponData?.[0]?.content);
+        } else if (deleteCouponData?.[0]?.type === "percent") {
+          setPercent(-deleteCouponData[0]?.content);
+        }
+        couponIdArr.pop();
+        localStorage.setItem("couponId", JSON.stringify(couponIdArr));
       }
-      couponIdArr.pop();
-      localStorage.setItem("couponId", JSON.stringify(couponIdArr));
     }
-  }, [totalPrice]);
+  }, [totalPrice, couponDatas]);
 
   return (
     <Card>
